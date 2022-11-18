@@ -14,6 +14,8 @@ Features:
 
 ## Getting Started
 
+If you are using Typescript, make sure you're on at least 5.0.0 (`next` tag at time of writing).
+
 1. Install:
 
    1. Vite Plugin:

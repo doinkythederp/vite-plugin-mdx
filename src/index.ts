@@ -1,4 +1,4 @@
-import type { Plugin } from 'vite';
+import type { Plugin } from 'vite'
 import { createTransformer } from './transform'
 import { MdxOptions, MdxPlugin } from './types'
 import { viteMdxTransclusion } from './viteMdxTransclusion'
@@ -7,9 +7,7 @@ import { mergeArrays } from './common'
 
 export { MdxOptions, MdxPlugin, viteMdx as mdx }
 
-function viteMdx(
-  mdxOptions?: MdxOptions | ((filename: string) => MdxOptions)
-) {
+function viteMdx(mdxOptions?: MdxOptions | ((filename: string) => MdxOptions)) {
   return createPlugin(mdxOptions || {})
 }
 
@@ -52,21 +50,27 @@ function createPlugin(
       // to be compatible, we need to look for both plugin name.
       // We should also look for the other plugins names exported from @vitejs/plugin-react in case there are some internal refactors.
       const reactRefreshPlugins = plugins.filter(
-        (p) => p.name === 'react-refresh' || p.name === 'vite:react-babel'
-          || p.name === 'vite:react-refresh' || p.name === 'vite:react-jsx'
-      );
-      reactRefresh = reactRefreshPlugins.find(p => p.transform);
+        (p) =>
+          p.name === 'react-refresh' ||
+          p.name === 'vite:react-babel' ||
+          p.name === 'vite:react-refresh' ||
+          p.name === 'vite:react-jsx'
+      )
+      reactRefresh = reactRefreshPlugins.find((p) => p.transform)
       transformMdx = createTransformer(root, namedImports)
     },
-    async transform (code, id, ssr) {
+    async transform(code, id, ssr) {
       if (/\.mdx?$/.test(id)) {
         if (!transformMdx)
           throw new Error(
             'vite-plugin-mdx: configResolved hook should be called before calling transform hook'
           )
 
-        const mdxOptions = mergeOptions(globalMdxOptions, getMdxOptions?.(id))
-        mdxOptions.filepath = id
+        const mdxOptions: MdxOptions = mergeOptions(
+          globalMdxOptions,
+          getMdxOptions?.(id)
+        )
+        mdxOptions.baseUrl = id
 
         code = await transformMdx(code, mdxOptions)
         const refreshResult = await reactRefresh?.transform!.call(

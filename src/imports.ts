@@ -4,12 +4,6 @@ const importCache: {
   [cacheKey: string]: string | undefined
 } = {}
 
-type MdxModule = typeof import('@mdx-js/mdx')
-
-export function requireMdx(cwd: string): MdxModule {
-  return require(resolveMdxImport(cwd))
-}
-
 export function resolveMdxImport(cwd: string) {
   return resolveImport('@mdx-js/mdx', cwd) || require.resolve('@mdx-js/mdx')
 }
