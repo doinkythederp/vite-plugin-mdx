@@ -35,7 +35,7 @@
     "@types/node": "^14.14.22",
     "@types/resolve": "^1.20.0",
     "@types/unist": "^2.0.6",
-    "typescript": "^4.1.3",
+    "typescript": "^4.9.3",
     "vite": "^2.0.4"
   },
   "description": "Vite plugin for MDX",
@@ -47,5 +47,6 @@
   ],
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "type": "commonjs"
 }

@@ -5,9 +5,9 @@ import { viteMdxTransclusion } from './viteMdxTransclusion'
 import { NamedImports } from './imports'
 import { mergeArrays } from './common'
 
-export { MdxOptions, MdxPlugin }
+export { MdxOptions, MdxPlugin, viteMdx as mdx }
 
-export default function viteMdx(
+function viteMdx(
   mdxOptions?: MdxOptions | ((filename: string) => MdxOptions)
 ) {
   return createPlugin(mdxOptions || {})
@@ -64,7 +64,7 @@ function createPlugin(
           throw new Error(
             'vite-plugin-mdx: configResolved hook should be called before calling transform hook'
           )
-        
+
         const mdxOptions = mergeOptions(globalMdxOptions, getMdxOptions?.(id))
         mdxOptions.filepath = id
 
