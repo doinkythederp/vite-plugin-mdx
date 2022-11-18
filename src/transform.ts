@@ -1,11 +1,8 @@
 import { transform } from 'esbuild'
 import { MdxOptions } from './types'
-import { assertImportExists, inferNamedImports } from './imports'
+import { assertImportExists } from './imports'
 
-export function createTransformer(
-  root: string,
-  namedImports = inferNamedImports(root)
-) {
+export function createTransformer(root: string, namedImports = {}) {
   const mdxImport = import('@mdx-js/mdx')
   const imports = Object.entries(namedImports).map(
     ([packageName, imported]) => {
@@ -16,7 +13,7 @@ export function createTransformer(
     }
   )
 
-    return async function transform(code_mdx: string, mdxOptions?: MdxOptions) {
+  return async function transform(code_mdx: string, mdxOptions?: MdxOptions) {
     const mdx = await mdxImport
     const code_jsx = await mdx.compile(code_mdx, mdxOptions as any)
     const code_es2019 = await jsxToES2019(String(code_jsx))
