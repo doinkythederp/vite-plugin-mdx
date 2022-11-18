@@ -1,96 +1,86 @@
-====================== [**WE ARE LOOKING FOR A NEW MAINTAINER**](https://github.com/brillout/vite-plugin-mdx/issues/42) ====================
-
 # Vite Plugin MDX
 
-Vite plugin to use MDX v1 with your Vite app. For MDX v2 use [`@mdx-js/rollup`](https://www.npmjs.com/package/@mdx-js/rollup) instead, [this comment](https://github.com/brillout/vite-plugin-mdx/issues/44#issuecomment-974540152) explains how to implement it.
+Vite plugin to use [MDX](https://mdxjs.com) with your app.
 
 Features:
 
 - Works with React and Preact.
-- Works with Vue [**[WIP]**](https://github.com/brillout/vite-plugin-mdx/issues/3).
 - HMR support.
 - SSR support.
 - Plugin support, such as [remark-frontmatter](https://github.com/remarkjs/remark-frontmatter).
 
 ## Getting Started
 
-If you are using Typescript, make sure you're on at least 5.0.0 (`next` tag at time of writing).
+Caveats:
 
-1. Install:
+- If you would like to use typechecking, you'll need to use Typescript 5 or later, which is in beta at the time of writing.
+- This plugin adds a handler for using the `file://` protocol in import statements. This cannot be disabled at this time.
 
-   1. Vite Plugin:
-      ```sh
-       npm install vite-plugin-mdx
-      ```
-   2. MDX v1:
-      ```sh
-      npm install @mdx-js/mdx
-      ```
-      Or MDX v2:
-      ```sh
-      npm install @mdx-js/mdx@next
-      ```
-   3. MDX React:
-      ```sh
-      npm install @mdx-js/react
-      ```
-      Or MDX Preact:
-      ```sh
-      npm install @mdx-js/preact
-      ```
+### Install
 
-2. Add the plugin to your `vite.config.js`.
+This package & peer dependency:
+```sh
+ npm install vite-plugin-mdx @mdx-js/mdx
+```
 
-   ```js
-   // vite.config.js
+React/Preact integration:
+```sh
+npm install @mdx-js/react
+# or
+npm install @mdx-js/preact
+```
 
-   import mdx from 'vite-plugin-mdx'
+### Configure the plugin
 
-   // `options` are passed to `@mdx-js/mdx`
-   const options = {
-     // See https://mdxjs.com/advanced/plugins
-     remarkPlugins: [
-       // E.g. `remark-frontmatter`
-     ],
-     rehypePlugins: [],
-   }
+```js
+// vite.config.js
+import mdx from 'vite-plugin-mdx'
 
-   export default {
-     plugins: [mdx(options)]
-   }
-   ```
+// `options` are passed to `@mdx-js/mdx`
+const options = {
+  // See https://mdxjs.com/advanced/plugins
+  remarkPlugins: [
+    // E.g. `remark-frontmatter`
+  ],
+  rehypePlugins: [],
+}
 
-3. You can now write `.mdx` files.
+export default {
+  plugins: [mdx(options)]
+}
+```
 
-   ```mdx-js
-   // hello.mdx
+### Start using MDX in your app
 
-   import { Counter } from './Counter.jsx'
+```mdx-js
+// hello.mdx
 
-   # Hello
+import { Counter } from './Counter.jsx'
 
-   This text is written in Markdown.
+# Hello
 
-   MDX allows Rich React components to be used directly in Markdown: <Counter/>
-   ```
+This text is written in Markdown.
 
-   ```jsx
-   // Counter.jsx
+MDX allows Rich React components to be used directlin Markdown: <Counter/>
+```
 
-   import React, { useState } from 'react'
+```jsx
+// Counter.jsx
 
-   export { Counter }
+import React, { useState } from 'react'
 
-   function Counter() {
-     const [count, setCount] = useState(0)
+export { Counter }
 
-     return (
-       <button onClick={() => setCount((count) => count + 1)}>
-         Counter: {count}
-       </button>
-     )
-   }
-   ```
+function Counter() {
+  const [count, setCount] = useState(0)
+
+  return (
+    <button onClick={() => setCount((count) => count + 1)}>
+      Counter: {count}
+    </button>
+  )
+}
+```
 
 ## Examples
 
