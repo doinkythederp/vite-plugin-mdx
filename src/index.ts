@@ -4,6 +4,9 @@ import { MdxOptions, MdxPlugin } from './types'
 import { viteMdxTransclusion } from './viteMdxTransclusion'
 import { NamedImports } from './imports'
 import { mergeArrays } from './common'
+import { pathToFileURL, fileURLToPath } from 'url'
+import { relative, resolve, sep as pathSep } from 'path'
+import { access, constants as fsConstants } from 'fs/promises'
 
 export { MdxOptions, MdxPlugin, viteMdx as mdx }
 
@@ -59,6 +62,26 @@ function createPlugin(
       reactRefresh = reactRefreshPlugins.find((p) => p.transform)
       transformMdx = createTransformer(root, namedImports)
     },
+    async resolveId(id, importer) {
+      // this might not be a good idea since it could be unwanted behavior
+      if (id.startsWith('file://')) {
+        if (!importer)
+          throw new Error('entry points cannot have file:// imports')
+        const target = fileURLToPath(new URL(id))
+
+        try {
+          await access(target, fsConstants.R_OK)
+        } catch {
+          throw new Error(
+            `imported file \`${target}\` is not readable (used in \`${importer}\`)`
+          )
+        }
+
+        // const path = '.' + pathSep + relative(resolve(importer, '..'), target)
+        // console.log(id, 'as', target, 'from', importer, '==>', path)
+        return target
+      }
+    },
     async transform(code, id, ssr) {
       if (/\.mdx?$/.test(id)) {
         if (!transformMdx)
@@ -70,7 +93,7 @@ function createPlugin(
           globalMdxOptions,
           getMdxOptions?.(id)
         )
-        mdxOptions.baseUrl = id
+        mdxOptions.baseUrl = pathToFileURL(id).toString()
 
         code = await transformMdx(code, mdxOptions)
         const refreshResult = await reactRefresh?.transform!.call(
